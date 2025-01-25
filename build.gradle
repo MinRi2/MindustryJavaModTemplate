@@ -22,6 +22,7 @@ ext{
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+    modDir = "${System.getenv("APPDATA")}\\Mindustry\\mods"
 }
 
 //java 8 backwards compatibility flag
@@ -95,6 +96,18 @@ task deploy(type: Jar){
         delete{
             delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
+        }
+    }
+}
+
+task compileAndCopy{
+    dependsOn jar
+
+    doLast{
+        copy{
+            from "$buildDir/libs/"
+            into "$modDir/"
+            include "${project.archivesBaseName}Desktop.jar"
         }
     }
 }
